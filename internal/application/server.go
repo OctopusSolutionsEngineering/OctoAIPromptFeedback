@@ -8,7 +8,8 @@ import (
 func StartServer() error {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-	router.GET("/api/feedback", GetFeedback)
+	router.GET("/api/feedback", GetAllFeedback)
+	router.GET("/api/feedback/:id", GetFeedback)
 
 	return router.Run("localhost:" + environment.GetPort())
 }

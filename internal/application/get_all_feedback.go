@@ -7,21 +7,13 @@ import (
 	"net/http"
 )
 
-func GetFeedback(c *gin.Context) {
-	id := c.Param("id")
-
-	feedback, found, err := infrastructure.GetFeedbackItem(id)
+func GetAllFeedback(c *gin.Context) {
+	feedback, err := infrastructure.GetFeedback()
 
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, jsonapi.Error{
-			Title:  "Failed to retrieve feedback item",
+			Title:  "Failed to retrieve feedback items",
 			Detail: err.Error(),
-		})
-	}
-
-	if !found {
-		c.IndentedJSON(http.StatusNotFound, jsonapi.Error{
-			Title: "Failed to find feedback item",
 		})
 	}
 
@@ -29,7 +21,7 @@ func GetFeedback(c *gin.Context) {
 
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, jsonapi.Error{
-			Title:  "Failed to marshal feedback item",
+			Title:  "Failed to marshal feedback items",
 			Detail: err.Error(),
 		})
 	}

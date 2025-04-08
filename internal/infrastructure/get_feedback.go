@@ -16,3 +16,13 @@ func GetFeedback() ([]model.Feedback, error) {
 		},
 	}, nil
 }
+
+func GetFeedbackItem(id string) (model.Feedback, bool, error) {
+	return model.Feedback{
+		ID:        "0",
+		Timestamp: time.Now(),
+		Prompt:    "Sample prompt",
+		Comment:   "This is a sample comment",
+		ThumbsUp:  false,
+	}, true, nil
+}
