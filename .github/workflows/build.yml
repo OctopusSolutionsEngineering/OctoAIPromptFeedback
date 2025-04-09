@@ -1,0 +1,115 @@
+name: Go Build
+'on':
+  workflow_dispatch: {}
+  push:
+    paths-ignore:
+      - '.github/workflows/*'
+  pull_request: {}
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.15
+        with:
+          versionSpec: 5.x
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+      - name: Set up Go
+        uses: actions/checkout@v4
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.15
+        with:
+          versionSpec: 5.x
+      - id: determine_version
+        name: Determine Version
+        uses: gittools/actions/gitversion/execute@v0.9.15
+        with:
+          additionalArguments: /overrideconfig mode=Mainline
+      - name: Install Dependencies
+        run: go get ./...
+        shell: bash
+      - name: List Dependencies
+        run: go list -m all > dependencies.txt
+        shell: bash
+      - name: Collect Dependencies
+        uses: actions/upload-artifact@v4
+        with:
+          name: Dependencies
+          path: dependencies.txt
+      - name: List Dependency Updates
+        run: go list -u -m -f "{{if .Update}}{{.}}{{end}}" all > dependencyUpdates.txt
+        shell: bash
+      - name: Collect Dependency Updates
+        uses: actions/upload-artifact@v2
+        with:
+          name: Dependencies Updates
+          path: dependencyUpdates.txt
+      - run: go build -ldflags="-X 'main.Version=${{ steps.determine_version.outputs.semVer }}'" -o functions/feedback_linux_amd64_azure cmd/azure/main.go
+        env:
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: 0
+      # Note you must exclude the local.settings.json file from the zip. Otherwise, you get errors like:
+      # Microsoft.Azure.WebJobs.Script: WorkerConfig for runtime: custom not found.
+      - run: |
+          zip -r feedback_linux_amd64_azure.zip . -x local.settings.json
+          cp feedback_linux_amd64_azure.zip feedback_azure.${{ steps.determine_version.outputs.semVer }}.zip
+        working-directory: functions
+      - id: create_release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ steps.determine_version.outputs.semVer }}+run${{ github.run_number }}-attempt${{ github.run_attempt }}
+          title: Release ${{ steps.determine_version.outputs.semVer }} Run ${{ github.run_number }} Attempt ${{ github.run_attempt }}
+          draft: ${{ github.ref == 'refs/heads/main' && 'false' || 'true' }}
+          prerelease: ${{ github.ref == 'refs/heads/main' && 'false' || 'true' }}
+      - name: Upload Azure Functions Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: functions/feedback_linux_amd64_azure.zip
+          asset_name: feedback_linux_amd64_azure.zip
+          asset_content_type: application/octet-stream
+      - name: Install Octopus Deploy CLI
+        uses: OctopusDeploy/install-octopus-cli-action@v1
+        with:
+          version: latest
+#      - name: Push packages to Octopus Deploy
+#        if: ${{ steps.branch-name.outputs.current_branch == 'main' }}
+#        uses: OctopusDeploy/push-package-action@v3
+#        env:
+#          OCTOPUS_API_KEY: ${{ secrets.COPILOT_OCTOPUS_API }}
+#          OCTOPUS_URL: ${{ secrets.COPILOT_OCTOPUS_URL }}
+#          OCTOPUS_SPACE: ${{ secrets.COPILOT_OCTOPUS_SPACE }}
+#        with:
+#          packages: functions/feedback_azure.${{ steps.determine_version.outputs.semVer }}.zip
+#          overwrite_mode: OverwriteExisting
+#      - name: Create Octopus Release
+#        if: ${{ steps.branch-name.outputs.current_branch == 'main' }}
+#        uses: OctopusDeploy/create-release-action@v3
+#        env:
+#          OCTOPUS_API_KEY: ${{ secrets.COPILOT_OCTOPUS_API }}
+#          OCTOPUS_URL: ${{ secrets.COPILOT_OCTOPUS_URL }}
+#          OCTOPUS_SPACE: ${{ secrets.COPILOT_OCTOPUS_SPACE }}
+#        with:
+#          project: Octopus Feedback Function
+#          packages: feedback_azure:${{ steps.determine_version.outputs.semVer }}
+#          release_number: ${{ steps.determine_version.outputs.semVer }}+${{ steps.determine_version.outputs.ShortSha }}.${{ github.run_number }}.${{ github.run_attempt }}
+#          git_ref: main
+permissions:
+  id-token: write
+  checks: write
+  contents: write
+  packages: write
