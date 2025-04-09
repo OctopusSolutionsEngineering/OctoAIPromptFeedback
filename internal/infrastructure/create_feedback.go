@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/model"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/sha"
-	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/validation"
+	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/validation"
 	"time"
 )
 import "github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
