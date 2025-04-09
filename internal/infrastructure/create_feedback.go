@@ -19,6 +19,10 @@ func CreateFeedbackAzureStorageTable(feedback model.Feedback) error {
 
 	ctx := context.Background()
 
+	if err := CreateTable(service, ctx); err != nil {
+		return err
+	}
+
 	client := service.NewClient("Feedback")
 
 	myEntity := aztables.EDMEntity{
