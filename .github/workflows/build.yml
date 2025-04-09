@@ -50,7 +50,7 @@ jobs:
         run: go list -u -m -f "{{if .Update}}{{.}}{{end}}" all > dependencyUpdates.txt
         shell: bash
       - name: Collect Dependency Updates
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Dependencies Updates
           path: dependencyUpdates.txt
