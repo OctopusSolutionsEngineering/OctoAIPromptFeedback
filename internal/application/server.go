@@ -10,6 +10,7 @@ func StartServer() error {
 	router := gin.Default()
 	router.GET("/api/feedback", GetAllFeedback)
 	router.GET("/api/feedback/:id", GetFeedback)
+	router.POST("/api/feedback", CreateFeedback)
 
 	return router.Run("localhost:" + environment.GetPort())
 }

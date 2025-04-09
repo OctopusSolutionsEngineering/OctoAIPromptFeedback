@@ -17,12 +17,14 @@ func GetFeedback(c *gin.Context) {
 			Title:  "Failed to retrieve feedback item",
 			Detail: err.Error(),
 		})
+		return
 	}
 
 	if !found {
 		c.IndentedJSON(http.StatusNotFound, jsonapi.Error{
 			Title: "Failed to find feedback item",
 		})
+		return
 	}
 
 	jsonApi, err := jsonapi.Marshal(feedback)
@@ -32,6 +34,7 @@ func GetFeedback(c *gin.Context) {
 			Title:  "Failed to marshal feedback item",
 			Detail: err.Error(),
 		})
+		return
 	}
 
 	c.String(http.StatusOK, string(jsonApi))

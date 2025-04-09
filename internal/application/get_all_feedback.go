@@ -15,6 +15,7 @@ func GetAllFeedback(c *gin.Context) {
 			Title:  "Failed to retrieve feedback items",
 			Detail: err.Error(),
 		})
+		return
 	}
 
 	jsonApi, err := jsonapi.Marshal(feedback)
@@ -24,6 +25,7 @@ func GetAllFeedback(c *gin.Context) {
 			Title:  "Failed to marshal feedback items",
 			Detail: err.Error(),
 		})
+		return
 	}
 
 	c.String(http.StatusOK, string(jsonApi))
