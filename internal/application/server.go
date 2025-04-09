@@ -19,6 +19,9 @@ func StartServer() error {
 	router.GET("/api/feedback", middleware.ApiKeyCheck(apiKey), GetAllFeedback)
 	router.GET("/api/feedback/:id", middleware.ApiKeyCheck(apiKey), GetFeedback)
 
+	// The health endpoint has no security
+	router.GET("/api/health", GetHealth)
+
 	// Creating resources uses an Octopus Server JWT to authorize requests
 	router.POST("/api/feedback", middleware.JwtCheck, CreateFeedback)
 
