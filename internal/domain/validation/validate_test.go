@@ -14,12 +14,12 @@ func TestValidateFeedback(t *testing.T) {
 	}{
 		{
 			name:        "Valid feedback",
-			feedback:    model.Feedback{ID: "123"},
+			feedback:    model.Feedback{ID: "123", Server: "test-server"},
 			expectedErr: nil,
 		},
 		{
 			name:        "Missing ID",
-			feedback:    model.Feedback{ID: ""},
+			feedback:    model.Feedback{ID: "", Server: "test-server"},
 			expectedErr: errors.New("id is required"),
 		},
 	}
