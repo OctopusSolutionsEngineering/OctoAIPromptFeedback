@@ -11,7 +11,8 @@ import (
 // ApiKeyCheck is a middleware function that checks for a valid API key in the request header.
 func ApiKeyCheck(serviceApiKey string) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		if len(serviceApiKey) == 0 {
+		// We need an API key of some complexity.
+		if len(serviceApiKey) < 20 {
 			c.IndentedJSON(http.StatusUnauthorized, responses.GenerateError("Failed to process request", errors.New("no API key has been defined")))
 			c.Abort()
 			return
