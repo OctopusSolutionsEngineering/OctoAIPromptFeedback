@@ -34,7 +34,8 @@ func JwtCheck(c *gin.Context) {
 	// Use the token to look up the user. This is not foolproof - you could supply any valid JWT token
 	// with an audience claim that points to a server that responds to this API request.
 	// We can't prove that anyone submitting feedback is a genuine Octopus user.
-	// But since we store the audience in the feedback items, we can filter out bad requests later.
+	// But we do effectively prove that you own a DNS name, which is almost as good.
+	// Since we store the audience in the feedback items, we can filter out bad requests later.
 	// It also raises the bar for anyone looking to abuse the API, as you would need to generate valid JWTs,
 	// host a JWKS server, and host a server that responds the API request.
 	octopusClient, err := client.NewClientWithAccessToken(nil, apiURL, token, "")
