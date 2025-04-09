@@ -10,7 +10,7 @@ import (
 
 func TestApiKeyCheck(t *testing.T) {
 	// Set up a valid API key in the environment
-	validApiKey := "test-api-key"
+	validApiKey := "test-api-key-12345678901234567890"
 
 	tests := []struct {
 		name           string
