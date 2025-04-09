@@ -5,6 +5,7 @@ import (
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/application/responses"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/jwt"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/model"
+	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/sha"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/infrastructure"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -38,7 +39,7 @@ func CreateFeedback(c *gin.Context) {
 	newFeedback := model.Feedback{
 		ID:        uuid.New().String(),
 		Timestamp: time.Now(),
-		Server:    aud,
+		Server:    sha.GetSha256Hash(aud), // We might want this for filtering, but we don't want to save PII (even if it is just a domain name)
 		Prompt:    feedback.Prompt,
 		Comment:   feedback.Comment,
 		ThumbsUp:  feedback.ThumbsUp,
