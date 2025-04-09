@@ -3,17 +3,17 @@ package infrastructure
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/model"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/sha"
+	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/validation"
 	"time"
 )
 import "github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 
 // https://pkg.go.dev/github.com/Azure/azure-sdk-for-go/sdk/data/aztables
 func CreateFeedbackAzureStorageTable(feedback model.Feedback) error {
-	if feedback.ID == "" {
-		return errors.New("id is required")
+	if err := validation.ValidateFeedback(feedback); err != nil {
+		return err
 	}
 
 	service, err := aztables.NewServiceClientFromConnectionString(GetStorageConnectionString(), nil)
