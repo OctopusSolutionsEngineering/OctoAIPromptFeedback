@@ -87,7 +87,13 @@ func GetKeyFromJWKS(jwksURL, kid string) (*rsa.PublicKey, error) {
 	return GetKeyFromJWKSByteArray(body, kid)
 }
 
-func ValidateJWTWithJWKS(tokenString string, jwksURL string, getKey GetKey) error {
+func ValidateJWTWithJWKS(tokenString string, jwksURL string, getKey GetKey, skipValidation bool) error {
+	options := []jwt.ParserOption{}
+
+	if skipValidation {
+		options = append(options, jwt.WithoutClaimsValidation())
+	}
+
 	// Parse the token to extract the kid
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Ensure the signing method is RSA
@@ -103,7 +109,7 @@ func ValidateJWTWithJWKS(tokenString string, jwksURL string, getKey GetKey) erro
 
 		// Fetch the public key from the JWKS
 		return getKey(jwksURL, kid)
-	})
+	}, options...)
 
 	if err != nil {
 		return fmt.Errorf("failed to validate token: %w", err)
@@ -140,5 +146,5 @@ func ValidateJWT(tokenString string) (string, error) {
 		return "", err
 	}
 
-	return aud, ValidateJWTWithJWKS(tokenString, aud+"/.well-known/jwks", GetKeyFromJWKS)
+	return aud, ValidateJWTWithJWKS(tokenString, aud+"/.well-known/jwks", GetKeyFromJWKS, false)
 }

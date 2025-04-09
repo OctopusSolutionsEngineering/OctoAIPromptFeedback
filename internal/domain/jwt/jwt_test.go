@@ -15,9 +15,6 @@ func TestGetAud(t *testing.T) {
 }
 
 func TestValidateJWTWithJWKS(t *testing.T) {
-	// Need to find a way to ignore expired tokens
-	return
-
 	jwksURL := "http://localhost:8080/.well-known/jwks"
 
 	err := ValidateJWTWithJWKS(testJwt, jwksURL, func(_, kid string) (*rsa.PublicKey, error) {
@@ -32,7 +29,7 @@ func TestValidateJWTWithJWKS(t *testing.T) {
 			}
 		  ]
 		}`), kid)
-	})
+	}, true)
 
 	if err != nil {
 		t.Fatalf("failed to validate JWT: %v", err)
