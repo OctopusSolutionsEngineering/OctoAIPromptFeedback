@@ -80,6 +80,11 @@ step "deploy-with-cli" {
         }
         worker_pool = "hosted-ubuntu"
 
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:6.4.0-ubuntu.22.04"
+        }
+
         packages "Packages.FunctionApp" {
             acquisition_location = "Server"
             feed = "octopus-server-built-in"
