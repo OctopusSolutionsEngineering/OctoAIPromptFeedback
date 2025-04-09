@@ -54,7 +54,7 @@ jobs:
         with:
           name: Dependencies Updates
           path: dependencyUpdates.txt
-      - run: go build -ldflags="-X 'main.Version=${{ steps.determine_version.outputs.semVer }}'" -o functions/feedback_linux_amd64_azure cmd/azure/main.go
+      - run: go build -ldflags="-X 'main.Version=${{ steps.determine_version.outputs.semVer }}'" -o functions/feedback_linux_amd64_azure cmd/web/main.go
         env:
           GOOS: linux
           GOARCH: amd64
