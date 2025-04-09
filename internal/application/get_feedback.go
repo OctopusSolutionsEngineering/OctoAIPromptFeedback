@@ -2,6 +2,7 @@ package application
 
 import (
 	"github.com/DataDog/jsonapi"
+	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/application/responses"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/infrastructure"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,10 +14,7 @@ func GetFeedback(c *gin.Context) {
 	feedback, found, err := infrastructure.GetFeedbackItem(id)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, jsonapi.Error{
-			Title:  "Failed to retrieve feedback item",
-			Detail: err.Error(),
-		})
+		c.IndentedJSON(http.StatusInternalServerError, responses.GenerateError("Failed to process request", err))
 		return
 	}
 
@@ -30,10 +28,7 @@ func GetFeedback(c *gin.Context) {
 	jsonApi, err := jsonapi.Marshal(feedback)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, jsonapi.Error{
-			Title:  "Failed to marshal feedback item",
-			Detail: err.Error(),
-		})
+		c.IndentedJSON(http.StatusInternalServerError, responses.GenerateError("Failed to process request", err))
 		return
 	}
 
