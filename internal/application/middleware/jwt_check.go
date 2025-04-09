@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// JwtCheck is a middleware function that checks for a valid JWT token in the request header.
 func JwtCheck(c *gin.Context) {
 
 	// At the end of the day, this service is essentially unauthenticated.

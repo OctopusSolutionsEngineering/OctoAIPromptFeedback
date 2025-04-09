@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// GetAllFeedback responds to https://jsonapi.org/format/#fetching-resources
 func GetAllFeedback(c *gin.Context) {
 	feedback, err := infrastructure.GetFeedback()
 

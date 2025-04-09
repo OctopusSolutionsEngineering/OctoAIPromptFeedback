@@ -15,6 +15,7 @@ import (
 	"time"
 )
 
+// CreateFeedback https://jsonapi.org/format/#crud-creating
 func CreateFeedback(c *gin.Context) {
 
 	body, err := io.ReadAll(c.Request.Body)

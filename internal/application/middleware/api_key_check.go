@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// ApiKeyCheck is a middleware function that checks for a valid API key in the request header.
 func ApiKeyCheck(serviceApiKey string) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		if len(serviceApiKey) == 0 {

@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// GetAllFeedback responds to https://jsonapi.org/format/#fetching-resources
 func GetFeedback(c *gin.Context) {
 	id := c.Param("id")
 
