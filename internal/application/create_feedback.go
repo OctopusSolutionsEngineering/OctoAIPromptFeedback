@@ -31,19 +31,12 @@ func CreateFeedback(c *gin.Context) {
 		return
 	}
 
-	newUUID, err := uuid.NewUUID()
-
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, responses.GenerateError("Failed to process request", err))
-		return
-	}
-
 	token := strings.TrimPrefix(c.GetHeader("Authorization"), "Bearer ")
 
 	aud, err := jwt.ValidateJWT(token)
 
 	newFeedback := model.Feedback{
-		ID:        newUUID.String(),
+		ID:        uuid.New().String(),
 		Timestamp: time.Now(),
 		Server:    aud,
 		Prompt:    feedback.Prompt,
