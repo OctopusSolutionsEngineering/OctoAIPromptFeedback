@@ -33,5 +33,6 @@ func GetFeedback(c *gin.Context) {
 		return
 	}
 
+	c.Header("Content-Type", "application/vnd.api+json")
 	c.String(http.StatusOK, string(jsonApi))
 }
