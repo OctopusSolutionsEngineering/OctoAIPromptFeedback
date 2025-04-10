@@ -36,10 +36,10 @@ func CreateFeedbackAzureStorageTable(feedback model.Feedback) error {
 			RowKey:       feedback.ID,
 		},
 		Properties: map[string]any{
-			"Comment":   feedback.Comment,
-			"Timestamp": feedback.Timestamp.Format(time.RFC3339),
-			"Prompt":    feedback.Prompt,
-			"ThumbsUp":  feedback.ThumbsUp,
+			"Comment":  feedback.Comment,
+			"Created":  feedback.Created.Format(time.RFC3339),
+			"Prompt":   feedback.Prompt,
+			"ThumbsUp": feedback.ThumbsUp,
 		},
 	}
 	marshalled, err := json.Marshal(myEntity)

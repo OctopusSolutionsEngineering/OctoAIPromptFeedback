@@ -38,12 +38,12 @@ func CreateFeedback(c *gin.Context) {
 	aud, err := jwt.ValidateJWT(token)
 
 	newFeedback := model.Feedback{
-		ID:        uuid.New().String(),
-		Timestamp: time.Now(),
-		Server:    sha.GetSha256Hash(aud), // We might want this for filtering, but we don't want to save PII (even if it is just a domain name)
-		Prompt:    feedback.Prompt,
-		Comment:   feedback.Comment,
-		ThumbsUp:  feedback.ThumbsUp,
+		ID:       uuid.New().String(),
+		Created:  time.Now(),
+		Server:   sha.GetSha256Hash(aud), // We might want this for filtering, but we don't want to save PII (even if it is just a domain name)
+		Prompt:   feedback.Prompt,
+		Comment:  feedback.Comment,
+		ThumbsUp: feedback.ThumbsUp,
 	}
 
 	if err := infrastructure.CreateFeedbackAzureStorageTable(newFeedback); err != nil {
@@ -58,6 +58,5 @@ func CreateFeedback(c *gin.Context) {
 		return
 	}
 
-	c.Header("Content-Type", "application/vnd.api+json")
 	c.String(http.StatusCreated, string(jsonApi))
 }

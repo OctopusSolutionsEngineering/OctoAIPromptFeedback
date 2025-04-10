@@ -42,12 +42,12 @@ func GetFeedback() ([]model.Feedback, error) {
 			}
 
 			retValue = append(retValue, model.Feedback{
-				ID:        myEntity.RowKey,
-				Timestamp: GetTimeProperty("Timestamp", myEntity, time.Time{}),
-				Server:    GetStringProperty("Server", myEntity, ""),
-				Prompt:    GetStringProperty("Prompt", myEntity, ""),
-				Comment:   GetStringProperty("Comment", myEntity, ""),
-				ThumbsUp:  GetBoolProperty("Server", myEntity, false),
+				ID:       myEntity.RowKey,
+				Created:  GetTimeProperty("Created", myEntity, time.Time{}),
+				Server:   GetStringProperty("Server", myEntity, ""),
+				Prompt:   GetStringProperty("Prompt", myEntity, ""),
+				Comment:  GetStringProperty("Comment", myEntity, ""),
+				ThumbsUp: GetBoolProperty("ThumbsUp", myEntity, false),
 			})
 		}
 	}
@@ -90,12 +90,12 @@ func GetFeedbackItem(id string) (model.Feedback, bool, error) {
 			}
 
 			return model.Feedback{
-				ID:        myEntity.RowKey,
-				Timestamp: GetTimeProperty("Timestamp", myEntity, time.Time{}),
-				Server:    GetStringProperty("Server", myEntity, ""),
-				Prompt:    GetStringProperty("Prompt", myEntity, ""),
-				Comment:   GetStringProperty("Comment", myEntity, ""),
-				ThumbsUp:  GetBoolProperty("Server", myEntity, false),
+				ID:       myEntity.RowKey,
+				Created:  GetTimeProperty("Created", myEntity, time.Time{}),
+				Server:   GetStringProperty("Server", myEntity, ""),
+				Prompt:   GetStringProperty("Prompt", myEntity, ""),
+				Comment:  GetStringProperty("Comment", myEntity, ""),
+				ThumbsUp: GetBoolProperty("ThumbsUp", myEntity, false),
 			}, true, nil
 		}
 	}
