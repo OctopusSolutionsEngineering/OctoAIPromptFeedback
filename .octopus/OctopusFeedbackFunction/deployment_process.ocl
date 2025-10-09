@@ -69,10 +69,75 @@ step "deploy-settings" {
     }
 }
 
+process_template "deploy" {
+    name = "Deploy"
+    process_template_slug = "azure-function-deployment-go"
+    version_mask = "2.X"
+
+    package_parameter "Packages.FunctionApp" {
+        feed = "octopus-server-built-in"
+        package_id = "feedback_azure"
+    }
+
+    package_parameter "Packages.FunctionsCli" {
+        feed = "octopus-server-built-in"
+        package_id = "Azure.Functions.Cli.linux-x64"
+    }
+
+    parameter "Azure.Account" {
+        value = "Octopus.Azure.Account"
+    }
+
+    parameter "Octopus.WorkerPool" {
+        value = "WorkerPools-2688"
+    }
+
+    parameter "Octopus.ContainerImageFeed" {
+        value = "Feeds-4704"
+    }
+
+    parameter "Octopus.Environment.Security" {
+        value = "Environments-3023"
+    }
+}
+
+process_template "security" {
+    name = "Security"
+    process_template_slug = "azure-function-deployment"
+    version_mask = "4.X"
+
+    package_parameter "Packages.AzureCli" {
+        feed = "octopus-server-built-in"
+        package_id = "Azure.Functions.Cli.linux-x64"
+    }
+
+    package_parameter "SecurityScan.Package" {
+        feed = "octopus-server-built-in"
+        package_id = "feedback_azure"
+    }
+
+    parameter "Azure.Account" {
+        value = "Octopus.Azure.Account"
+    }
+
+    parameter "Octopus.WorkerPool" {
+        value = "WorkerPools-2688"
+    }
+
+    parameter "Octopus.SecurityEnvironment" {
+        value = "Environments-3023"
+    }
+
+    parameter "Octopus.ContainerImageFeed" {
+        value = "Feeds-4704"
+    }
+}
+
 step "deploy-with-cli" {
     name = "Deploy with CLI"
 
     action {
+        is_disabled = true
         properties = {
             Octopus.Action.Template.Id = "ActionTemplates-4321"
             Octopus.Action.Template.Version = "2"
@@ -104,6 +169,7 @@ step "remove-worker-access" {
     name = "Remove worker access"
 
     action {
+        is_disabled = true
         properties = {
             Octopus.Action.Template.Id = "ActionTemplates-4322"
             Octopus.Action.Template.Version = "0"
