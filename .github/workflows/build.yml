@@ -70,6 +70,11 @@ jobs:
           GOOS: linux
           GOARCH: amd64
           CGO_ENABLED: 0
+      - name: Generate SBOM
+        uses: CycloneDX/gh-gomod-generate-sbom@v2
+        with:
+          version: v1
+          args: mod -licenses -json -output functions/bom.json
       # Note you must exclude the local.settings.json file from the zip. Otherwise, you get errors like:
       # Microsoft.Azure.WebJobs.Script: WorkerConfig for runtime: custom not found.
       - run: |
