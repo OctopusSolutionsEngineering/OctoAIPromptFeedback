@@ -17,7 +17,11 @@ func JwtCheckMiddleware(skipValidation bool) gin.HandlerFunc {
 		// At the end of the day, this service is essentially unauthenticated.
 		// We accept any user with a valid JWT token that appears to authenticate with an Octopus Deploy instance.
 		token := strings.TrimSpace(strings.TrimPrefix(c.GetHeader("Authorization"), "Bearer "))
+		// We need to standardise on this header, but accept both for now
 		server := c.GetHeader("X-Octopus-Url")
+		if server == "" {
+			server = c.GetHeader("X-Octopus-Server")
+		}
 
 		if token == "" {
 			// If the token is empty, we don't need to do anything
