@@ -1,12 +1,13 @@
 package application
 
 import (
+	"os"
+	"strings"
+
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/application/middleware"
 	"github.com/OctopusSolutionsEngineering/OctoAIPromptFeedback/internal/domain/environment"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"os"
-	"strings"
 )
 
 // StartServer starts the Gin server and sets up the routes
@@ -23,7 +24,7 @@ func StartServer() error {
 	router.GET("/api/health", GetHealth)
 
 	// Creating resources uses an Octopus Server JWT to authorize requests
-	router.POST("/api/feedback", middleware.JwtCheck, CreateFeedback)
+	router.POST("/api/feedback", middleware.JwtCheckMiddleware(false), CreateFeedback)
 
 	zap.L().Info("Starting server", zap.String("port", environment.GetPort()))
 
